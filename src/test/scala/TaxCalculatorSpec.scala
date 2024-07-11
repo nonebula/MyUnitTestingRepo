@@ -76,4 +76,25 @@ class TaxCalculatorSpec extends AnyWordSpec {
       }
     }
   }
+
+  //Extension
+  "TaxCalculator.calculateCapitalGainsTax" should {
+    "return the total amount of capital gains tax to pay" when {
+      "the gains are below the personal gains limit" in {
+        val result: Double = taxCalculator.calculateCapitalGainsTax(2000)
+
+        assert(result == 0)
+      }
+      "the gains are within the basic rate limit" in {
+        val result: Double = taxCalculator.calculateCapitalGainsTax(30000)
+
+        assert(result == 2700)
+      }
+      "the gains are above the basic rate limit" in {
+        val result: Double = taxCalculator.calculateCapitalGainsTax(60000)
+
+        assert(result == 11400)
+      }
+    }
+  }
 }
