@@ -17,57 +17,63 @@ class TaxCalculatorSpec extends AnyWordSpec {
 
         assert(result == 2000)
       }
-      "the income is within the higher rate limit"
+      "the income is within the higher rate limit" in {
+        val result: Double = taxCalculator.calculateTax(60000)
+
+        assert(result == 12000)
+      }
+      "the income is above the higher rate limit" in {
+        val result: Double = taxCalculator.calculateTax(150000)
+
+        assert(result == 51250)
+      }
     }
   }
 
   //Second Test
   "TaxCalculator.isHigherRateTaxpayer" should {
     "return whether the payee is a higher rate tax payer" when {
-      "the income is above the higher rate tax limit" in {
-        val result: Double = taxCalculator.isHigherRateTaxpayer(125000)
+      "the income is below the higher rate tax limit" in {
+        val result: Boolean = taxCalculator.isHigherRateTaxpayer(25000)
 
-        assert(result > 0)
+        assert(!result)
+      }
+      "the income is above the higher rate tax limit" in {
+        val result: Boolean = taxCalculator.isHigherRateTaxpayer(95000)
+
+        assert(result)
       }
     }
   }
-
-  // A method which can tell you if someone is a higher rate taxpayer
-  def isHigherRateTaxpayer(income: Double): Boolean = {
-    ???
-  }
-
 
   //Third Test
   "TaxCalculator.calculateTax" should {
     "return a string with the income limit of the payee's current tax band" when {
-      "the income is below the personal tax limit" in {
-        val result: Double = taxCalculator.calculateTax(5000)
+      "the income is below 0" in {
+        val result: String = taxCalculator.formattedCurrentTaxAllowance(-4)
 
-        assert(result == 0)
+        assert(result == "Invalid Input")
+      }
+      "the income is below the personal tax limit" in {
+        val result: String = taxCalculator.formattedCurrentTaxAllowance(5000)
+
+        assert(result == "£10,000")
+      }
+      "the income is within the basic rate limit" in {
+        val result: String = taxCalculator.formattedCurrentTaxAllowance(20000)
+
+        assert(result == "£50,000")
+      }
+      "the income is within the higher rate limit" in {
+        val result: String = taxCalculator.formattedCurrentTaxAllowance(60000)
+
+        assert(result == "£125,000")
+      }
+      "the income is above the higher rate limit" in {
+        val result: String = taxCalculator.formattedCurrentTaxAllowance(150000)
+
+        assert(result == "No Limit")
       }
     }
   }
 }
-
-// A method that will return a string with the income limit of their current tax band.
-// The return will also be formatted, E.g: "£12,500" or "No limit"
-def formattedCurrentTaxAllowance(income: Double): String = {
-  ???
-}
-
-
-
-//class TaxCalculator {
-//
-//  // Tax bands (simplified to make testing a bit easier)
-//  private val personalAllowance: Int = 10000
-//  private val basicRateLimit: Int = 50000
-//  private val higherRateLimit: Int = 125000
-//
-//  // Tax rates
-//  private val personalAllowanceRate: Double = 0
-//  private val basicRate: Double = 0.2
-//  private val higherRate: Double = 0.4
-//  private val additionalRate: Double = 0.45
-
